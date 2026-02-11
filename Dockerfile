@@ -6,5 +6,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 EXPOSE 5000
-CMD ["sh", "-c", "gunicorn -b 0.0.0.0:$PORT listado:app"]
+CMD ["gunicorn", "-b", "0.0.0.0:5000", "listado:app"]
 
