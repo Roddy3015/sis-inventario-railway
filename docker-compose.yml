@@ -1,0 +1,24 @@
+services:
+  web2:
+    build: .
+    container_name: tools_web
+    restart: always
+    ports:
+      - "5001:5000"
+    environment:
+      TZ: America/Lima
+      MYSQLHOST: mysql_global
+      MYSQLUSER: app_user
+      MYSQLPASSWORD: app_pass
+      MYSQLDATABASE: empresa_db
+      MYSQLPORT: 3306
+      APP_BASE: ""
+      FLASK_SECRET_KEY: "MEGAN2026"
+      COOKIE_SECURE: "0"
+    networks:
+      - empresa_net
+
+networks:
+  empresa_net:
+    external: true
+    name: empresa_net

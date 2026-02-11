@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Herramientas / Equipos - Jefe</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+
+<body data-base="{{ config.get('APP_BASE','') }}">
+  <div class="container">
+
+    <!-- LOGIN -->
+    <section id="auth-section" class="card">
+      <button class="btn-back-menu" type="button" onclick="volverAlMenuPrincipal()">← Volver al menú</button>
+      <div class="icon">👤</div>
+      <h1>Jefe de Grupo</h1>
+      <p class="subtitle">Iniciar sesión</p>
+
+      <div class="input-group">
+        <label>Nombre completo</label>
+        <input id="login-nombre" type="text" placeholder="Ej: Carlos Ruiz" autocomplete="username">
+      </div>
+
+      <div class="input-group">
+        <label>Contraseña</label>
+        <input id="login-pass" type="password" placeholder="••••••••" autocomplete="current-password">
+      </div>
+
+      <button class="btn primary" onclick="iniciarSesion()">Ingresar</button>
+      <p id="login-msg" class="msg"></p>
+
+      <div class="small-hint">
+        <span>Solo usuarios con rol <b>JEFE</b>.</span>
+      </div>
+    </section>
+
+    <section id="menu-section" class="card" style="display:none;">
+      <header class="topbar">
+        <div>
+          <h2 id="user-display-menu" class="hello"></h2>
+          <p class="subtitle" style="margin:0;">Selecciona una acción</p>
+        </div>
+        <button class="btn ghost" onclick="cerrarSesion()">Salir</button>
+      </header>
+
+      <div class="row-actions" style="margin-top: 12px;">
+        <button class="btn primary" onclick="irARegistroSalida()">📤 Registrar salida</button>
+        <button class="btn secondary" onclick="abrirPendientes()">📥 Registrar devolución</button>
+      </div>
+
+      <div class="small-hint" style="margin-top:10px;">
+        <span>
+          En <b>devolución</b> solo verás lo que tú tienes en <b>PENDIENTE</b>.
+        </span>
+      </div>
+
+      <p id="menu-msg" class="msg"></p>
+    </section>
+
+    <section id="scan-section" class="card" style="display:none;">
+      <header class="topbar">
+        <div>
+          <h2 id="user-display" class="hello"></h2>
+          <div class="steps">
+            <span id="dot-1" class="dot active"></span>
+            <span id="dot-2" class="dot"></span>
+          </div>
+        </div>
+        <button class="btn ghost" onclick="volverMenu()">Menú</button>
+      </header>
+
+      <h3 class="section-title">1. Escanear / ingresar código</h3>
+      <p class="subtitle">Puedes escribirlo o escanear el código de barras.</p>
+
+      <div class="code-row">
+        <input id="codigo" class="code-input" type="text" placeholder="Ej: HE.HYD01 o EQ.HYD.00002" autocomplete="off">
+        <button class="btn scan" onclick="abrirScanner()" title="Escanear">📷</button>
+      </div>
+
+      <div class="row-actions">
+        <button class="btn secondary" onclick="buscarCodigo()">Buscar</button>
+        <button id="btn-continuar" class="btn primary" onclick="continuar()" disabled>Continuar ➜</button>
+      </div>
+
+      <div id="preview" class="preview" style="display:none;">
+        <div class="pill" id="p-tipo"></div>
+        <div class="preview-title" id="p-nombre"></div>
+        <div class="preview-sub" id="p-stock"></div>
+      </div>
+
+      <p id="scan-msg" class="msg"></p>
+    </section>
+
+    <section id="detail-section" class="card" style="display:none;">
+      <header class="topbar">
+        <div>
+          <h2 class="hello">Detalle</h2>
+          <div class="steps">
+            <span class="dot"></span>
+            <span class="dot active"></span>
+          </div>
+        </div>
+        <button class="btn ghost" onclick="volver()">Retroceder</button>
+      </header>
+
+      <div id="detalle-equipo" class="detail-box" style="display:none;">
+        <div class="pill">EQUIPO</div>
+
+        <div class="kv">
+          <span>Equipo</span><b id="e-nombre"></b>
+        </div>
+        <div class="kv">
+          <span>Marca</span><b id="e-marca"></b>
+        </div>
+        <div class="kv">
+          <span>Modelo</span><b id="e-modelo"></b>
+        </div>
+        <div class="kv">
+          <span>N° Serie</span><b id="e-serie"></b>
+        </div>
+
+        <div class="kv">
+          <span>Cantidad</span><b>1</b>
+        </div>
+      </div>
+
+      <div id="detalle-herramienta" class="detail-box" style="display:none;">
+        <div class="pill">HERRAMIENTA</div>
+
+        <div class="kv">
+          <span>Herramienta</span><b id="h-nombre"></b>
+        </div>
+        <div class="kv">
+          <span>Modelo</span><b id="h-modelo"></b>
+        </div>
+        <div class="kv">
+          <span>Tipo</span><b id="h-tipo"></b>
+        </div>
+
+        <div class="kv">
+          <span>Stock</span><b id="h-stock"></b>
+        </div>
+
+        <div class="qty">
+          <button class="qty-btn" onclick="menos()">−</button>
+          <div class="qty-value" id="cantidad">1</div>
+          <button class="qty-btn" onclick="mas()">+</button>
+        </div>
+
+        <div class="small-hint">
+          <span>La cantidad mínima es <b>1</b> y máxima el stock disponible.</span>
+        </div>
+      </div>
+
+      <div class="row-actions">
+        <button class="btn secondary" onclick="volver()">⬅ Volver</button>
+        <button class="btn primary" onclick="abrirConfirm()">Registrar</button>
+      </div>
+
+      <p id="detail-msg" class="msg"></p>
+    </section>
+
+  </div>
+
+  <div id="confirm-modal" class="modal" style="display:none;">
+    <div class="modal-card">
+      <h3>Confirmación</h3>
+      <p id="confirm-text" class="subtitle"></p>
+
+      <div class="row-actions">
+        <button class="btn secondary" onclick="cerrarConfirm()">No</button>
+        <button class="btn primary" onclick="registrarConfirmado()">Sí, registrar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="pendientes-modal" class="modal" style="display:none;" onclick="if(event.target.id==='pendientes-modal'){ cerrarPendientes(); }">
+    <div class="modal-card" style="max-width: 1000px; width: min(1000px, 100%);">
+      <header class="topbar" style="margin-bottom: 10px;">
+        <div>
+          <h3 style="margin:0;">Mis pendientes</h3>
+          <p class="subtitle" id="pendientes-sub" style="margin:0;">—</p>
+        </div>
+        <button class="btn ghost" onclick="cerrarPendientes()">Cerrar</button>
+      </header>
+
+      <div class="input-group" style="margin-top:0;">
+        <label>Buscar (por nombre, marca, modelo, tipo o código)</label>
+        <input id="pendientes-q" type="text" placeholder="Ej: PALA, HE001, Bosch..." autocomplete="off" oninput="filtrarPendientesLocal()">
+      </div>
+
+      <div class="preview" style="margin-top:12px; padding:0;">
+        <div style="overflow:auto; border-radius: 14px; border: 1px solid rgba(255,255,255,0.10);">
+          <table style="width:100%; border-collapse: collapse; min-width: 920px;">
+            <thead>
+              <tr>
+                <th style="text-align:left; padding:10px 12px;">Fecha</th>
+                <th style="text-align:left; padding:10px 12px;">Tipo</th>
+                <th style="text-align:left; padding:10px 12px;">Ítem</th>
+                <th style="text-align:left; padding:10px 12px;">Código</th>
+                <th style="text-align:left; padding:10px 12px;">Detalle</th>
+                <th style="text-align:left; padding:10px 12px;">Cant.</th>
+                <th style="text-align:right; padding:10px 12px;">Acción</th>
+              </tr>
+            </thead>
+            <tbody id="pendientes-tbody">
+              <tr><td colspan="7" style="padding:14px 12px; color: rgba(255,255,255,0.70);">Cargando…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <p id="pendientes-msg" class="msg"></p>
+      <div class="row-actions">
+        <button class="btn secondary" onclick="recargarPendientes()">Refrescar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="devolver-modal" class="modal" style="display:none;">
+    <div class="modal-card">
+      <h3>Confirmar devolución</h3>
+      <p id="devolver-text" class="subtitle"></p>
+
+      <div class="row-actions">
+        <button class="btn secondary" onclick="cerrarDevolverConfirm()">Cancelar</button>
+        <button class="btn primary" onclick="devolverConfirmado()">Sí, devolver</button>
+      </div>
+
+      <p id="devolver-msg" class="msg"></p>
+    </div>
+  </div>
+
+  <div id="scanner-modal" class="modal" style="display:none;" onclick="if(event.target.id==='scanner-modal'){ cerrarScanner(); }">
+    <div class="modal-card">
+      <h3>Escanear código</h3>
+      <p class="subtitle">Apunta al codigo de barras. Se detecta automaticamente</p>
+
+      <video id="scanner-video" autoplay playsinline></video>      
+      <p id="scanner-msg" class="msg"></p>
+
+      <div class="row-actions">
+        <button class="btn secondary" onclick="cerrarScanner()">Cerrar</button>
+        <button class="btn ghost" onclick="ayudaScanner()">Ayuda</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/@zxing/browser@latest"></script>
+  <script>
+    console.log("ZXingBrowser:", window.ZXingBrowser);
+    console.log("ZXing:", window.ZXing);
+  </script>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

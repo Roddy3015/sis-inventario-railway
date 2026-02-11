@@ -1,0 +1,293 @@
+:root{
+  --bg1:#0b1220;
+  --bg2:#0a1b2c;
+  --card:#0f2236;
+  --card2:#0d1b2b;
+  --text:#eaf2ff;
+  --muted:#9fb3c8;
+  --primary:#00d2ff;
+  --primary2:#3a7bd5;
+  --danger:#ff4d4d;
+  --shadow: 0 18px 45px rgba(0,0,0,.45);
+  --stroke: rgba(255,255,255,.10);
+}
+
+*{ box-sizing:border-box; }
+body{
+  margin:0;
+  font-family:"Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  color:var(--text);
+  min-height:100vh;
+  background: radial-gradient(1200px 700px at 20% 10%, rgba(0,210,255,.18), transparent 60%),
+              radial-gradient(900px 700px at 90% 20%, rgba(58,123,213,.18), transparent 55%),
+              linear-gradient(160deg, var(--bg1), var(--bg2));
+}
+
+.container{
+  width:100%;
+  max-width: 460px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.card{
+  background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+  border: 1px solid var(--stroke);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: 16px;
+  backdrop-filter: blur(6px);
+}
+
+.icon{
+  width:54px; height:54px;
+  border-radius: 16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: rgba(0,210,255,.10);
+  border: 1px solid rgba(0,210,255,.22);
+  margin-bottom: 10px;
+  font-size: 22px;
+}
+
+h1{ margin:0; font-size: 22px; }
+h2{ margin:0; font-size: 18px; }
+h3{ margin: 10px 0 6px; font-size: 16px; }
+
+.subtitle{
+  margin: 4px 0 12px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.section-title{ margin-top: 6px; }
+.hello{ font-weight:600; }
+
+.input-group{ margin: 10px 0; }
+label{
+  display:block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+input{
+  width:100%;
+  padding: 10px 12px;          
+  border-radius: 12px;
+  border: 1px solid var(--stroke);
+  background: rgba(0,0,0,.22);
+  color: var(--text);
+  font-size: 14px;             
+  outline: none;
+}
+input:focus{
+  border-color: rgba(0,210,255,.55);
+  box-shadow: 0 0 0 4px rgba(0,210,255,.12);
+}
+
+.btn{
+  width:100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,.06);
+  color: var(--text);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform .06s ease, opacity .15s ease;
+}
+.btn:active{ transform: scale(.99); }
+.btn:disabled{ opacity:.45; cursor:not-allowed; }
+
+.btn.primary{
+  background: linear-gradient(90deg, var(--primary), var(--primary2));
+  border: none;
+}
+.btn.secondary{
+  background: rgba(255,255,255,.08);
+}
+.btn.ghost{
+  width:auto;
+  padding: 8px 10px;
+  background: transparent;
+}
+
+.topbar{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.steps{ margin-top: 6px; display:flex; gap: 6px; }
+.dot{
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.30);
+  background: rgba(255,255,255,.12);
+}
+.dot.active{
+  background: rgba(0,210,255,.85);
+  border-color: rgba(0,210,255,.85);
+}
+
+.row-actions{
+  display:flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+.row-actions .btn{ flex: 1; }
+
+.code-row{
+  display:flex;
+  gap: 10px;
+  align-items:center;
+}
+.code-input{ flex: 1; }
+.btn.scan{
+  width: 46px;
+  min-width: 46px;
+  height: 44px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding: 0;
+  border-radius: 12px;
+  background: rgba(0,210,255,.12);
+  border: 1px solid rgba(0,210,255,.25);
+}
+
+.preview{
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 14px;
+  background: rgba(0,0,0,.20);
+  border: 1px solid var(--stroke);
+}
+.preview-title{ font-weight:600; margin-top:6px; }
+.preview-sub{ color: var(--muted); font-size: 13px; margin-top: 2px; }
+
+.pill{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(0,210,255,.12);
+  border: 1px solid rgba(0,210,255,.25);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.detail-box{
+  background: rgba(0,0,0,.20);
+  border: 1px solid var(--stroke);
+  border-radius: 14px;
+  padding: 12px;
+  margin: 10px 0;
+}
+
+.kv{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px dashed rgba(255,255,255,.10);
+}
+.kv:last-child{ border-bottom:none; }
+.kv span{ color: var(--muted); font-size: 13px; }
+.kv b{ font-size: 13px; }
+
+.qty{
+  margin-top: 10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap: 12px;
+}
+.qty-btn{
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,.06);
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 700;
+}
+.qty-value{
+  min-width: 44px;
+  text-align:center;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.msg{
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  min-height: 18px;
+}
+.small-hint{
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.modal{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.78);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding: 16px;
+  z-index: 9999;
+}
+.modal-card{
+  width: 100%;
+  max-width: 520px;
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+  border: 1px solid var(--stroke);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: 14px;
+}
+#scanner-video{
+  width: 100%;
+  margin-top: 10px;
+  border-radius: 14px;
+  border: 1px solid var(--stroke);
+  background: #000;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+@media (min-width: 768px){
+  .container{ max-width: 520px; padding: 22px; }
+  .card{ padding: 18px; }
+}
+
+.btn-back-menu{
+  width: auto !important;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.92);
+  font-weight: 700;
+  cursor: pointer;
+  text-transform: none;
+  margin-bottom: 12px;
+}
+
+.btn-back-menu:hover{
+  background: rgba(255,255,255,0.14);
+}

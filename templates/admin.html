@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin • Inventario</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+
+<body class="admin" data-base="{{ config.get('APP_BASE','') }}">
+  <div class="container">
+
+    <!-- LOGIN -->
+    <section id="admin-auth" class="card auth-card">
+      <div class="brand-row">
+        <div class="brand-badge">🛡️</div>
+        <div>
+          <h1 class="title">Panel Administrativo</h1>
+          <p class="subtitle">Movimientos • Equipos • Herramientas</p>
+        </div>
+      </div>
+
+      <h2 class="section-title">Iniciar sesión</h2>
+
+      <div class="input-grid">
+        <div class="input-group">
+          <label>Nombre completo</label>
+          <input id="admin-nombre" type="text" placeholder="Ej: TIMegan" autocomplete="username">
+        </div>
+        <div class="input-group">
+          <label>Contraseña</label>
+          <input id="admin-pass" type="password" placeholder="••••••••" autocomplete="current-password">
+        </div>
+      </div>
+
+      <div class="row-actions">
+        <button class="btn primary" onclick="adminLogin()">Ingresar</button>
+      </div>
+
+      <p id="admin-login-msg" class="msg"></p>
+      <div class="small-hint">Solo usuarios con rol <b>ADMIN</b>.</div>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section id="admin-dashboard" class="card dash-card" style="display:none;">
+      <header class="topbar">
+        <div>
+          <h2 class="hello">Admin</h2>
+          <p class="subtitle" style="margin:0;">Sesión: <b id="admin-who">—</b></p>
+        </div>
+        <button class="btn ghost" onclick="adminLogout()">Salir</button>
+      </header>
+
+      <!-- NAV -->
+      <div class="nav-tabs">
+        <button id="tabbtn-movs" class="tab active" onclick="switchTab('movs')">Movimientos</button>
+        <button id="tabbtn-eq" class="tab" onclick="switchTab('equipos')">Equipos</button>
+        <button id="tabbtn-he" class="tab" onclick="switchTab('herramientas')">Herramientas</button>
+      </div>
+
+      <div class="dash-content">
+
+        <!-- TAB: MOVIMIENTOS -->
+        <div id="view-movs" class="tabview">
+          <div class="section-head">
+            <h3 class="section-title" style="margin:0;">Movimientos</h3>
+            <div class="muted">Total: <b id="mov-total">0</b></div>
+          </div>
+
+          <div class="table-card" style="margin-bottom: 12px; padding: 12px;">
+            <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 0;">
+              <div class="input-group">
+                <label>Filtrar por Residente (Jefes)</label>
+                <select id="filter-residente" onchange="cargarMovimientos()">
+                  <option value="">Todos los residentes</option>
+                  </select>
+              </div>
+              <div class="input-group">
+                <label>Tipo de Ítem</label>
+                <select id="filter-tipo" onchange="cargarMovimientos()">
+                  <option value="">Todos</option>
+                  <option value="EQUIPO">Equipos</option>
+                  <option value="HERRAMIENTA">Herramientas</option>
+                </select>
+              </div>
+              <div class="input-group" style="display: flex; align-items: flex-end;">
+                <button class="btn secondary" style="width: 100%;" onclick="limpiarFiltros()">Limpiar filtros</button>
+              </div>
+            </div>
+          </div>
+
+          <p id="admin-msg" class="msg"></p>
+
+          <div class="table-card grow">
+            <div class="table-head">
+              <h3>Tabla de movimientos</h3>
+              <div class="muted" id="mov-info">—</div>
+            </div>
+
+            <div class="table-scroll">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th class="td-nowrap">Fecha</th>
+                    <th class="td-nowrap">Residente</th>
+                    <th class="td-nowrap">Tipo</th>
+                    <th>Item</th>
+                    <th class="td-wide">Especificación</th>
+                    <th class="td-nowrap">Estado retorno</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody">
+                  <tr><td colspan="6" class="td-empty">Cargando…</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: EQUIPOS -->
+        <div id="view-equipos" class="tabview" style="display:none;">
+          <div class="section-head">
+            <h3 class="section-title" style="margin:0;">Equipos</h3>
+            <div class="muted">Total: <b id="eq-total">0</b></div>
+          </div>
+
+          <div class="row-actions">
+            <button class="btn secondary" onclick="openListModal('equipos')">Ver lista</button>
+          </div>
+
+          <h3 class="section-title" style="margin-top:14px;">Registrar equipo</h3>
+          <p class="subtitle">Crea un equipo nuevo para inventario.</p>
+
+          <div class="form-grid">
+            <div class="input-group">
+              <label>Código (Ej: EQ001)</label>
+              <input id="eq-codigo" type="text" placeholder="EQ...">
+            </div>
+            <div class="input-group">
+              <label>Equipo</label>
+              <input id="eq-equipo" type="text" placeholder="Taladro, Generador...">
+            </div>
+            <div class="input-group">
+              <label>Marca</label>
+              <input id="eq-marca" type="text" placeholder="Bosch...">
+            </div>
+            <div class="input-group">
+              <label>Modelo</label>
+              <input id="eq-modelo" type="text" placeholder="X200...">
+            </div>
+            <div class="input-group">
+              <label>Número de serie</label>
+              <input id="eq-serie" type="text" placeholder="SN...">
+            </div>
+            <div class="input-group">
+              <label>Ubicación</label>
+              <input id="eq-ubi" type="text" placeholder="Almacén, Obra...">
+            </div>
+          </div>
+
+          <div class="row-actions">
+            <button class="btn secondary" onclick="limpiarEquipo()">Limpiar</button>
+            <button class="btn primary" onclick="crearEquipo()">Guardar equipo</button>
+          </div>
+
+          <p id="eq-msg" class="msg"></p>
+        </div>
+
+        <!-- TAB: HERRAMIENTAS -->
+        <div id="view-herramientas" class="tabview" style="display:none;">
+          <div class="section-head">
+            <h3 class="section-title" style="margin:0;">Herramientas</h3>
+            <div class="muted">Total: <b id="he-total">0</b></div>
+          </div>
+
+          <div class="row-actions">
+            <button class="btn secondary" onclick="openListModal('herramientas')">Ver lista</button>
+          </div>
+
+          <h3 class="section-title" style="margin-top:14px;">Registrar herramienta</h3>
+          <p class="subtitle">Crea una herramienta nueva con stock inicial.</p>
+
+          <div class="form-grid">
+            <div class="input-group">
+              <label>Código (Ej: HE001)</label>
+              <input id="he-codigo" type="text" placeholder="HE...">
+            </div>
+            <div class="input-group">
+              <label>Herramienta</label>
+              <input id="he-nombre" type="text" placeholder="Pala, Llave...">
+            </div>
+            <div class="input-group">
+              <label>Marca</label>
+              <input id="he-marca" type="text" placeholder="Bellota...">
+            </div>
+            <div class="input-group">
+              <label>Modelo</label>
+              <input id="he-modelo" type="text" placeholder="5501...">
+            </div>
+            <div class="input-group">
+              <label>Tipo / Modelo</label>
+              <input id="he-tipo" type="text" placeholder="Punta, plana...">
+            </div>
+            <div class="input-group">
+              <label>Ubicación</label>
+              <input id="he-ubi" type="text" placeholder="Almacén, Obra...">
+            </div>
+            <div class="input-group">
+              <label>Stock inicial</label>
+              <input id="he-stock" type="number" min="0" value="1">
+            </div>
+          </div>
+
+          <div class="row-actions">
+            <button class="btn secondary" onclick="limpiarHerramienta()">Limpiar</button>
+            <button class="btn primary" onclick="crearHerramienta()">Guardar herramienta</button>
+          </div>
+
+          <p id="he-msg" class="msg"></p>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+  <!-- MODAL LISTA -->
+  <div id="list-modal" class="modal" style="display:none;">
+    <div class="modal-card modal-big">
+      <div class="modal-head">
+        <h3 id="list-title" style="margin:0;">Lista</h3>
+        <button class="btn ghost" onclick="closeListModal()">Cerrar</button>
+      </div>
+
+      <div class="muted" id="list-subtitle" style="margin:6px 0 10px;">—</div>
+
+      <div class="modal-table-scroll">
+        <table class="table table-compact" id="list-table">
+          <thead id="list-thead"></thead>
+          <tbody id="list-tbody">
+            <tr><td class="td-empty">Cargando…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p id="list-msg" class="msg"></p>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='admin.js') }}"></script>
+</body>
+</html>
